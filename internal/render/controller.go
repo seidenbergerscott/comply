@@ -34,6 +34,7 @@ type renderData struct {
 	Project    *project
 	Stats      *stats
 	Narratives []*model.Document
+	Architectures []*model.Document
 	Policies   []*model.Document
 	Procedures []*model.Procedure
 	Standards  []*model.Standard
@@ -85,6 +86,7 @@ func load() (*model.Data, *renderData, error) {
 
 	rd := &renderData{}
 	rd.Narratives = modelData.Narratives
+	rd.Architectures = modelData.Architectures
 	rd.Policies = modelData.Policies
 	rd.Procedures = modelData.Procedures
 	rd.Standards = modelData.Standards

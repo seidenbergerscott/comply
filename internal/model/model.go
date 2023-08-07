@@ -3,6 +3,7 @@ package model
 type Data struct {
 	Standards  []*Standard
 	Narratives []*Document
+	Architectures []*Document
 	Policies   []*Document
 	Procedures []*Procedure
 	Tickets    []*Ticket

@@ -34,13 +34,18 @@ func ReadData() (*Data, error) {
 	if err != nil {
 		return nil, err
 	}
+	architectures, err := ReadArchitectures()
+	if err != nil {
+		return nil, err
+	}
 
 	return &Data{
-		Tickets:    tickets,
-		Narratives: narratives,
-		Policies:   policies,
-		Procedures: procedures,
-		Standards:  standards,
+		Tickets:       tickets,
+		Narratives:    narratives,
+		Policies:      policies,
+		Procedures:    procedures,
+		Standards:     standards,
+		Architectures: architectures,
 	}, nil
 }
 
@@ -91,6 +96,35 @@ func ReadStandards() ([]*Standard, error) {
 	}
 
 	return standards, nil
+}
+
+// Add this function to read architecture documents
+func ReadArchitectures() ([]*Document, error) {
+	var architectures []*Document
+
+	files, err := path.Architectures() // This function needs to be defined in the path package
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to enumerate paths")
+	}
+
+	for _, f := range files {
+		a := &Document{}
+		mdmd, err := loadMDMD(f.FullPath)
+		if err != nil {
+			return nil, err
+		}
+		err = yaml.Unmarshal([]byte(mdmd.yaml), &a)
+		if err != nil {
+			return nil, errors.Wrap(err, "unable to parse "+f.FullPath)
+		}
+		a.Body = mdmd.body
+		a.FullPath = f.FullPath
+		a.ModifiedAt = f.Info.ModTime()
+		a.OutputFilename = fmt.Sprintf("%s-%s.pdf", config.Config().FilePrefix, a.Acronym)
+		architectures = append(architectures, a)
+	}
+
+	return architectures, nil
 }
 
 // ReadNarratives loads narrative descriptions from the filesystem.

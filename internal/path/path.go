@@ -25,6 +25,11 @@ var Narratives = func() ([]File, error) {
 	return filesFor("narratives", "md")
 }
 
+// Architectures lists all architecture files.
+var Architectures = func() ([]File, error) {
+	return filesFor("architectures", "md")
+}
+
 // Policies lists all policy files.
 var Policies = func() ([]File, error) {
 	return filesFor("policies", "md")

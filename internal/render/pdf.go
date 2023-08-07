@@ -50,6 +50,23 @@ func pdf(output string, live bool, errCh chan error, wg *sync.WaitGroup) {
 			}
 		}
 
+		architectures, err := model.ReadArchitectures()
+		if err != nil {
+			errCh <- errors.Wrap(err, "unable to read architectures")
+			return
+		}
+
+		for _, architecture := range architectures {
+			renderToFilesystem(&pdfWG, errOutputCh, data, architecture, live)
+			err = <-errOutputCh
+			if err != nil {
+				errCh <- err
+				wg.Done()
+				return
+			}
+		}
+
+
 		pdfWG.Wait()
 
 		if !live {
